@@ -1,5 +1,5 @@
 import React from "react";
-import { listUsers, createUser } from "../api/http";
+import { getListUsersApi, createUser } from "../api/http";
 import AddUserModal from "../components/AddUserModal";
 
 type User = { id: number; name: string; email: string; role: "ADMIN"|"EDITOR"|"VIEWER"; createdAt: string; };
@@ -7,18 +7,23 @@ const ROLES: User["role"][] = ["ADMIN","EDITOR","VIEWER"];
 function initials(name:string){ return name.split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase(); }
 
 export default function Users(){
-  const [all, setAll] = React.useState<User[]>([]);
+  const [userList, setUserList] = React.useState<User[]>([]);
   const [query, setQuery] = React.useState(""); const [roleFilter, setRoleFilter] = React.useState<""|User["role"]>("");
   const [sortBy, setSortBy] = React.useState<"name"|"createdAt"|"email"|"role">("createdAt");
   const [sortDir, setSortDir] = React.useState<"asc"|"desc">("desc");
   const [page, setPage] = React.useState(1); const [pageSize, setPageSize] = React.useState(10);
   const [openAdd, setOpenAdd] = React.useState(false);
 
-  // const fetchUsers = React.useCallback(async ()=>{ setAll(await listUsers()); },[]);
-  // React.useEffect(()=>{ fetchUsers(); },[fetchUsers]);
+  React.useEffect(()=>{ getUserList(); },[]);
+
+  const getUserList = () => {
+    getListUsersApi()
+      .then((response: any) => setUserList(response?.data ?? []))
+      .catch((err: any) => console.error("Failed to fetch user list", err));
+  };
 
   const filtered = React.useMemo(()=>{
-    let data=[...all];
+    let data=[...userList];
     if(query.trim()){ const q=query.toLowerCase(); data=data.filter(u=>u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)); }
     if(roleFilter) data=data.filter(u=>u.role===roleFilter);
     data.sort((a,b)=>{
@@ -30,10 +35,14 @@ export default function Users(){
       if (av<bv) return -1*dir; if (av>bv) return 1*dir; return 0;
     });
     return data;
-  },[all,query,roleFilter,sortBy,sortDir]);
+  },[userList,query,roleFilter,sortBy,sortDir]);
 
-  const total=filtered.length; const totalPages=Math.max(1, Math.ceil(total/pageSize)); const currentPage=Math.min(page,totalPages);
-  const start=(currentPage-1)*pageSize; const pageItems=filtered.slice(start, start+pageSize);
+  const total=filtered.length; 
+  const totalPages=Math.max(1, Math.ceil(total/pageSize)); 
+  const currentPage=Math.min(page,totalPages);
+  const start=(currentPage-1)*pageSize; 
+  const pageItems=filtered.slice(start, start+pageSize);
+
   React.useEffect(()=>{ setPage(1); },[query,roleFilter,pageSize,sortBy,sortDir]);
 
   const toggleSort=(f: typeof sortBy)=>{ if(sortBy===f) setSortDir(d=>d==='asc'?'desc':'asc'); else { setSortBy(f); setSortDir('asc'); } };
@@ -63,7 +72,9 @@ export default function Users(){
           </div>
           <div className="toolbar-group">
             <label className="label">Per page</label>
-            <select className="select" value={pageSize} onChange={e=>setPageSize(Number(e.target.value))}>{[5,10,20,50].map(n=><option key={n} value={n}>{n}</option>)}</select>
+            <select className="select" value={pageSize} onChange={e=>setPageSize(Number(e.target.value))}>{[5,10,20,50].map(n=>
+              <option key={n} value={n}>{n}</option>)}
+            </select>
           </div>
         </div>
       </div>
@@ -82,7 +93,14 @@ export default function Users(){
             <tbody>
               {pageItems.map(u=>(
                 <tr key={u.id}>
-                  <td><div className="user-cell"><div className={`avatar avatar-${u.role.toLowerCase()}`}>{initials(u.name)}</div><div className="user-meta"><div className="user-name">{u.name}</div><div className="user-email sm-only">{u.email}</div></div></div></td>
+                  <td>
+                    <div className="user-cell">
+                      <div className={`avatar avatar-${u.role.toLowerCase()}`}>{initials(u.name)}</div>
+                      <div className="user-meta"><div className="user-name">{u.name}</div>
+                      <div className="user-email sm-only">{u.email}</div>
+                      </div>
+                    </div>
+                  </td>
                   <td className="th-hide-sm">{u.email}</td>
                   <td><span className={`badge badge-${u.role.toLowerCase()}`}>{u.role}</span></td>
                   <td className="th-hide-sm">{new Date(u.createdAt).toLocaleDateString()}</td>
@@ -102,7 +120,6 @@ export default function Users(){
         </div>
       </div>
 
-      {/* <AddUserModal open={openAdd} onClose={()=>setOpenAdd(false)} onSubmit={handleCreate} /> */}
       <AddUserModal open={openAdd} onClose={()=>setOpenAdd(false)} onSubmit={handleCreate} />
     </div>
   );

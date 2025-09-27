@@ -22,12 +22,12 @@ export async function getListLocationsApi(){
   }
 }
 
-export async function createLocation(payload:{name:string;lat:number;lng:number;description?:string}){ 
+export async function createLocationApi(payload:{name:string;lat:number;lng:number;description?:string}){ 
   const response = await http.post('/api/locations', payload); 
   return response; 
 }
 
-export async function listUsers(){ 
+export async function getListUsersApi(){ 
   const response = await http.get('/api/users'); 
   return response; 
 }

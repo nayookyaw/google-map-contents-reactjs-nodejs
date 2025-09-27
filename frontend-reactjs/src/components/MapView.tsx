@@ -1,7 +1,7 @@
 // MapView.tsx
 import React from "react";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
-import { createLocation, getListLocationsApi } from "../api/http";
+import { createLocationApi, getListLocationsApi } from "../api/http";
 
 type LocationItem = {
   id: number; name: string; lat: number; lng: number;
@@ -32,10 +32,9 @@ export default function MapView(): JSX.Element {
     const description = window.prompt("Description?") || undefined;
 
     try {
-      const created = await createLocation({ name, lat, lng, description });
+      const createdLocation : any = await createLocationApi({ name, lat, lng, description });
       // optimistic add (uncomment if your API returns the created record)
-      // setLocations(prev => [created.data ?? created, ...prev]);
-      // or refetch:
+      setLocations(prev => [createdLocation?.data ?? createdLocation.data, ...prev]);
       getLocationList();
     } catch (err) {
       console.error("Failed to create location:", err);
