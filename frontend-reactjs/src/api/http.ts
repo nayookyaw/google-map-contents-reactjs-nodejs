@@ -13,6 +13,24 @@ export async function getGoogleMapsApiKeyApi() {
   }
 }
 
+// Locations
+export type LocationItem = {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+  description?: string;
+  imageBase64?: string | null;
+  imageMime?: string | null;
+  locationName?: string | null;
+  screenWidth?: number | null;
+  screenHeight?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type CreateLocationPayload = Omit<LocationItem, 'id' | 'createdAt' | 'updatedAt'>;
+
 export async function getListLocationsApi(){
   try {
     const response = await http.get('/api/locations'); 
@@ -30,6 +48,16 @@ export async function createLocationApi(payload:{name:string;lat:number;lng:numb
     return error;
   }
 }
+
+export type UpdateLocationPayload = Partial<CreateLocationPayload>;
+export async function updateLocationApi(id: number, payload: UpdateLocationPayload) {
+  return await http.put<LocationItem>(`/api/locations/${id}`, payload);
+}
+
+export async function deleteLocationApi(id: number) {
+  return await http.delete<{ ok: true; id: number }>(`/api/locations/${id}`);
+}
+
 
 export async function getListUsersApi(){ 
   const response = await http.get('/api/users'); 

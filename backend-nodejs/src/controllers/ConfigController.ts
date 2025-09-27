@@ -5,6 +5,6 @@ export class ConfigController{
   getGoogleMapsKey = async (_req:Request,res:Response)=>{ 
     const cfg = await prisma.appConfig.findUnique({where:{id:1}});
     if(!cfg) return res.status(500).json({error:'AppConfig not initialized'}); 
-    res.json({apiKey: cfg.googleMapsApiKey}); 
+    res.status(200).json({apiKey: cfg.googleMapsApiKey}); 
   }
 }

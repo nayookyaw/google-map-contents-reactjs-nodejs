@@ -10,4 +10,12 @@ export class LocationsRepository{
   async create(input:CreateLocationDto){ 
     return prisma.location.create({data:input});
   }
+
+  async update(id: number, input: Partial<CreateLocationDto>) {
+    return prisma.location.update({ where: { id }, data: input });
+  }
+
+  async remove(id: number) {
+    return prisma.location.delete({ where: { id } });
+  }
 }

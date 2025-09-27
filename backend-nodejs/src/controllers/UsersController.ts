@@ -6,7 +6,7 @@ export class UsersController{
   constructor(private service=new UsersService()){} 
   
   list=async(_req:Request,res:Response)=>{
-    res.json(await this.service.list())
+    res.status(200).json(await this.service.list())
   }; 
   
   create=async(req:Request,res:Response)=>{ 

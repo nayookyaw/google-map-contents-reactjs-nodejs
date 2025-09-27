@@ -22,3 +22,6 @@ export const CreateLocationDto = z.object({
 });
 
 export type CreateLocationDto = z.infer<typeof CreateLocationDto>;
+
+export const UpdateLocationDto = CreateLocationDto.partial();
+export type UpdateLocationDto = z.infer<typeof UpdateLocationDto>;
