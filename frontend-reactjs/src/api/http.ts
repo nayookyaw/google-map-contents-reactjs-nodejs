@@ -32,7 +32,7 @@ export async function getListUsersApi(){
   return response; 
 }
 
-export async function createUser(payload:{name:string;email:string;role:'ADMIN'|'EDITOR'|'VIEWER'}){ 
+export async function createUserApi(payload:{name:string;email:string;role:'ADMIN'|'EDITOR'|'VIEWER'}){ 
   const response = await http.post('/api/users', payload); 
   return response; 
 }

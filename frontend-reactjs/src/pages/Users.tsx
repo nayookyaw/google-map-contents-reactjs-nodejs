@@ -1,5 +1,5 @@
 import React from "react";
-import { getListUsersApi, createUser } from "../api/http";
+import { getListUsersApi, createUserApi } from "../api/http";
 import AddUserModal from "../components/AddUserModal";
 
 type User = { id: number; name: string; email: string; role: "ADMIN"|"EDITOR"|"VIEWER"; createdAt: string; };
@@ -49,9 +49,15 @@ export default function Users(){
   const sortIndicator=(f: typeof sortBy)=> sortBy!==f ? '' : (sortDir==='asc'?' ▲':' ▼');
 
   // const handleCreate= async (data:{name:string; email:string; role:User['role']})=>{ const created= await createUser(data); setAll(prev=>[created, ...prev]); };
-  const handleCreate = () => {
-    
-  }
+  const handleCreateUser = async (data: {name:string; email:string; role:User['role']}) => {
+    try {
+      const createdUser : any = await createUserApi(data);
+      setUserList((prev) => [createdUser.data, ...prev]); // optimistic add
+      setOpenAdd(false);
+    } catch (err) {
+      console.error("Failed to create user", err);
+    }
+  };
 
   return (
     <div className="page">
@@ -120,7 +126,7 @@ export default function Users(){
         </div>
       </div>
 
-      <AddUserModal open={openAdd} onClose={()=>setOpenAdd(false)} onSubmit={handleCreate} />
+      <AddUserModal open={openAdd} onClose={()=>setOpenAdd(false)} onSubmit={handleCreateUser} />
     </div>
   );
 }
