@@ -1,1 +1,32 @@
-import { NavLink } from 'react-router-dom'; export default function Sidebar(){ return (<aside className="sidebar"><h2>Maps App</h2><nav><NavLink to="/" end className={({isActive})=> (isActive?'active':'')}>Home</NavLink><NavLink to="/users" className={({isActive})=> (isActive?'active':'')}>Users</NavLink><NavLink to="/settings" className={({isActive})=> (isActive?'active':'')}>Settings</NavLink></nav></aside>); }
+import { NavLink } from "react-router-dom";
+
+export default function Sidebar() {
+  return (
+    <aside className="sidebar">
+      <h2>Maps App</h2>
+      <nav>
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Home
+        </NavLink>
+
+        <NavLink
+          to="/users"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Users
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Settings
+        </NavLink>
+      </nav>
+    </aside>
+  );
+}
