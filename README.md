@@ -1,4 +1,7 @@
-# Google Maps with Contents Reactjs and NodeJs Typescript
+    Developer - Nay Oo Kyaw
+    Email - nayookyaw.nok@gmail.com
+
+# Google Map with Contents Reactjs and NodeJs Typescript Jest Unit Testing
 
 # 1) Start MySQL
 docker compose up -d
