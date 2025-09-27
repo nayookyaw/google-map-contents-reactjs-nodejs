@@ -1,1 +1,20 @@
-import { Request, Response } from 'express'; import { UsersService } from '../services/UsersService'; import { CreateUserDto } from '../models/userDtos'; export class UsersController{ constructor(private service=new UsersService()){} list=async(_req:Request,res:Response)=>{res.json(await this.service.list())}; create=async(req:Request,res:Response)=>{ const parsed=CreateUserDto.safeParse(req.body); if(!parsed.success) return res.status(400).json({errors:parsed.error.flatten()}); const created=await this.service.create(parsed.data); res.status(201).json(created); }}
+import { Request, Response } from 'express'; 
+import { UsersService } from '../services/UsersService'; 
+import { CreateUserDto } from '../models/userDtos'; 
+
+export class UsersController{ 
+  constructor(private service=new UsersService()){} 
+  
+  list=async(_req:Request,res:Response)=>{
+    res.json(await this.service.list())
+  }; 
+  
+  create=async(req:Request,res:Response)=>{ 
+    const parsed=CreateUserDto.safeParse(req.body); 
+    if(!parsed.success) 
+      return res.status(400).json({errors:parsed.error.flatten()}); 
+    
+    const created=await this.service.create(parsed.data); 
+    res.status(201).json(created); 
+  }
+}

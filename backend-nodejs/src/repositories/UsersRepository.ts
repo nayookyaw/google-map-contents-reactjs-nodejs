@@ -1,1 +1,13 @@
-import { prisma } from '../config/db'; import { User } from '@prisma/client'; import { CreateUserDto } from '../models/userDtos'; export class UsersRepository{ async list():Promise<User[]>{ return prisma.user.findMany({orderBy:{id:'desc'}});} async create(input:CreateUserDto){ return prisma.user.create({data:input});}}
+import { prisma } from '../config/db'; 
+import { User } from '@prisma/client'; 
+import { CreateUserDto } from '../models/userDtos'; 
+
+export class UsersRepository{ 
+  async list():Promise<User[]>{ 
+    return prisma.user.findMany({orderBy:{id:'desc'}});
+  } 
+  
+  async create(input:CreateUserDto){ 
+    return prisma.user.create({data:input});
+  }
+}
