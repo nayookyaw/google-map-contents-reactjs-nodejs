@@ -65,17 +65,17 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
       let imageBase64: string | undefined;
       let imageMime: string | undefined;
 
-      // if (imageFile) {
-      //   const { base64, mime } = await fileToBase64(imageFile);
-      //   imageBase64 = base64;
-      //   imageMime = mime;
-      // }
-
       if (imageFile) {
-        const inputImg = await imageFileToBase64Compressed(imageFile, { maxW: 1024, maxH: 1024, quality: 0.8 });
-        imageBase64 = inputImg.base64;
-        imageMime = inputImg.mime;
+        const { base64, mime } = await fileToBase64(imageFile);
+        imageBase64 = base64;
+        imageMime = mime;
       }
+
+      // if (imageFile) {
+      //   const inputImg = await imageFileToBase64Compressed(imageFile, { maxW: 1024, maxH: 1024, quality: 0.8 });
+      //   imageBase64 = inputImg.base64;
+      //   imageMime = inputImg.mime;
+      // }
 
       await onSubmit({
         name: name.trim(),
@@ -109,43 +109,43 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
     });
   }
 
-  async function imageFileToBase64Compressed(
-    file: File,
-    opts: { maxW?: number; maxH?: number; quality?: number } = {}
-  ): Promise<{ base64: string; mime: string }> {
-    const maxW = opts.maxW ?? 1024;
-    const maxH = opts.maxH ?? 1024;
-    const quality = opts.quality ?? 0.8; // 0..1 (JPEG/WebP)
+  // async function imageFileToBase64Compressed(
+  //   file: File,
+  //   opts: { maxW?: number; maxH?: number; quality?: number } = {}
+  // ): Promise<{ base64: string; mime: string }> {
+  //   const maxW = opts.maxW ?? 1024;
+  //   const maxH = opts.maxH ?? 1024;
+  //   const quality = opts.quality ?? 0.8; // 0..1 (JPEG/WebP)
 
-    const img = document.createElement("img");
-    const url = URL.createObjectURL(file);
-    await new Promise<void>((res, rej) => {
-      img.onload = () => res();
-      img.onerror = (e) => rej(e);
-      img.src = url;
-    });
+  //   const img = document.createElement("img");
+  //   const url = URL.createObjectURL(file);
+  //   await new Promise<void>((res, rej) => {
+  //     img.onload = () => res();
+  //     img.onerror = (e) => rej(e);
+  //     img.src = url;
+  //   });
 
-    const { width, height } = img;
-    let w = width, h = height;
-    const ratio = Math.min(maxW / width, maxH / height, 1);
-    w = Math.round(width * ratio);
-    h = Math.round(height * ratio);
+  //   const { width, height } = img;
+  //   let w = width, h = height;
+  //   const ratio = Math.min(maxW / width, maxH / height, 1);
+  //   w = Math.round(width * ratio);
+  //   h = Math.round(height * ratio);
 
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d")!;
-    ctx.drawImage(img, 0, 0, w, h);
+  //   const canvas = document.createElement("canvas");
+  //   canvas.width = w;
+  //   canvas.height = h;
+  //   const ctx = canvas.getContext("2d")!;
+  //   ctx.drawImage(img, 0, 0, w, h);
 
-    // Prefer JPEG/WebP for compression
-    const mime = file.type.includes("png") ? "image/jpeg" : (file.type || "image/jpeg");
-    const dataUrl = canvas.toDataURL(mime, quality); // compress here
-    URL.revokeObjectURL(url);
+  //   // Prefer JPEG/WebP for compression
+  //   const mime = file.type.includes("png") ? "image/jpeg" : (file.type || "image/jpeg");
+  //   const dataUrl = canvas.toDataURL(mime, quality); // compress here
+  //   URL.revokeObjectURL(url);
 
-    const [prefix, b64] = dataUrl.split(",", 2);
-    const outMime = prefix.match(/data:(.*);base64/)?.[1] ?? "image/jpeg";
-    return { base64: b64, mime: outMime };
-  }
+  //   const [prefix, b64] = dataUrl.split(",", 2);
+  //   const outMime = prefix.match(/data:(.*);base64/)?.[1] ?? "image/jpeg";
+  //   return { base64: b64, mime: outMime };
+  // }
 
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true">

@@ -6,10 +6,17 @@ import AddLocationModal from "../components/AddLocationModal";
 import { DEFAULT_NO_IMAGE } from "../constants/ImgConst";
 
 type LocationItem = {
-  id: number; name: string; lat: number; lng: number;
-  description?: string; createdAt: string;
-  imageBase64?: string; imageMime?: string;
-  locationName?: string; screenWidth?: number; screenHeight?: number;
+  id: number; 
+  name: string; 
+  lat: number; 
+  lng: number;
+  description?: string; 
+  createdAt: string;
+  imageBase64?: string; 
+  imageMime?: string;
+  locationName?: string; 
+  screenWidth?: number; 
+  screenHeight?: number;
 };
 
 const containerStyle: React.CSSProperties = { width: "100%", height: "100vh" };
@@ -69,8 +76,8 @@ export default function MapView(): JSX.Element {
   return (
     <>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12} onClick={handleMapClick}>
-        {locations.map((loc) => (
-          <Marker key={loc.id} position={{ lat: loc.lat, lng: loc.lng }} onClick={() => setSelected(loc)} 
+        {locations?.map((loc) => (
+          <Marker key={loc.id} position={{ lat: loc?.lat, lng: loc?.lng }} onClick={() => setSelected(loc)} 
            icon={greenDot}
           />
         ))}
