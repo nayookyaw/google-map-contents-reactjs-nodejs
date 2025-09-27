@@ -21,6 +21,13 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
+          to="/locations"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Locations
+        </NavLink>
+
+        <NavLink
           to="/settings"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
