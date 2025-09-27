@@ -13,7 +13,7 @@ model Location {
   lat         Float
   lng         Float
   description String?
-  imageBase64 String?
+  imageBase64 String? @db.MediumText   // supports up to ~16 MB
   imageMime   String?
   locationName String?
   screenWidth Float?
