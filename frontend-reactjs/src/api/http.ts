@@ -22,9 +22,13 @@ export async function getListLocationsApi(){
   }
 }
 
-export async function createLocationApi(payload:{name:string;lat:number;lng:number;description?:string}){ 
-  const response = await http.post('/api/locations', payload); 
-  return response; 
+export async function createLocationApi(payload:{name:string;lat:number;lng:number;description?:string}){
+  try {
+    const response = await http.post('/api/locations', payload); 
+    return response; 
+  } catch (error) {
+    return error;
+  }
 }
 
 export async function getListUsersApi(){ 

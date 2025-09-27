@@ -1,5 +1,5 @@
 import { LocationsRepository } from '../repositories/LocationsRepository'; 
-import { CreateLocationDto } from '../models/dtos'; 
+import { CreateLocationDto } from '../models/locationDtos'; 
 
 export class LocationsService{ 
   constructor(private repo=new LocationsRepository()){} 
