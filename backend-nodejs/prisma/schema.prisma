@@ -13,6 +13,11 @@ model Location {
   lat         Float
   lng         Float
   description String?
+  imageBase64 String?
+  imageMime   String?
+  locationName String?
+  screenWidth Float?
+  screenHeight Float?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
