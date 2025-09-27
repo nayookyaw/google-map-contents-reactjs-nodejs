@@ -1,0 +1,1 @@
+import React from 'react'; type Props={value:string}; export default function MaskedText({value}:Props){ const [show,setShow]=React.useState(false); const masked=value.replace(/.(?=.{4})/g,'*'); return (<div><code>{show?value:masked}</code><button className="mask-toggle" onClick={()=>setShow(s=>!s)}>{show?'Hide':'Show'}</button></div>);}

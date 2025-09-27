@@ -1,0 +1,1 @@
+import { z } from 'zod'; export const CreateLocationDto=z.object({name:z.string().min(1),lat:z.number().refine(v=>v>=-90&&v<=90),lng:z.number().refine(v=>v>=-180&&v<=180),description:z.string().optional()}); export type CreateLocationDto=z.infer<typeof CreateLocationDto>;
