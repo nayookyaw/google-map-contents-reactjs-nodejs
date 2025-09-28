@@ -133,7 +133,7 @@ export default function MapView(): JSX.Element {
     if (loc.isActive === false) return (
       <>
       <span className="poi-icon" aria-hidden><RiSignalWifiOffLine /></span>
-        Not active now, please check back later on
+        Not active now, please check back later on.
       </>
     );
     if (isAlreadyAvailable(loc)) return (
@@ -146,7 +146,7 @@ export default function MapView(): JSX.Element {
     return (
       <>
       <span className="poi-icon" aria-hidden><CgUnavailable /></span>
-        Not available right now, please check back later on
+        Not available right now, somebody took already. Please check back later on.
       </>
     );
   };
