@@ -72,9 +72,15 @@ export default function MapView(): JSX.Element {
     }    
   };
 
-  const center = locations.length > 0
-    ? { lat: locations[0]?.lat, lng: locations[0]?.lng }
-    : { lat: -36.8485, lng: 174.7622 };
+  // const center = locations.length > 0
+  //   ? { lat: locations[0]?.lat, lng: locations[0]?.lng }
+  //   : { lat: -36.8485, lng: 174.7622 };
+  const DEFAULT_CENTER = { lat: -36.8485, lng: 174.7622 }; // Auckland, NZ
+  const center = React.useMemo(() => {
+  return locations.length
+      ? { lat: locations[0].lat, lng: locations[0].lng }
+      : DEFAULT_CENTER;
+  }, [locations[0]?.lat, locations[0]?.lng]);
     
   const dotIcons = {
     green:  "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
