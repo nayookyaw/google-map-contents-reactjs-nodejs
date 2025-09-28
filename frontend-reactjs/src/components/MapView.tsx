@@ -5,6 +5,9 @@ import { createLocationApi } from "../api/http";
 import AddLocationModal from "../components/AddLocationModal";
 import { DEFAULT_NO_IMAGE } from "../constants/ImgConst";
 import { SlScreenTablet } from "react-icons/sl";
+import { CgUnavailable } from "react-icons/cg";
+import { FaCheckCircle } from "react-icons/fa";
+import { RiSignalWifiOffLine } from "react-icons/ri";
 
 type LocationItem = {
   id: number; 
@@ -18,6 +21,9 @@ type LocationItem = {
   locationName?: string; 
   screenWidth?: number; 
   screenHeight?: number;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
 };
 
 const containerStyle: React.CSSProperties = { width: "100%", height: "100vh" };
@@ -74,12 +80,65 @@ export default function MapView(): JSX.Element {
     anchor: new google.maps.Point(24, 48),    // ⬅️ tip at bottom-center
   };
 
+  const markerIcons = React.useMemo(() => { // NEW
+    const make = (url: string): google.maps.Icon | string =>
+      (typeof google !== "undefined" && google?.maps)
+        ? {
+            url,
+            scaledSize: new google.maps.Size(48, 48), // bigger (px)
+            anchor: new google.maps.Point(24, 48),    // tip at bottom-center
+          }
+        : url;
+    return {
+      green: make(dotIcons.green),
+      yellow: make(dotIcons.yellow),
+      red: make(dotIcons.red),
+    };
+  }, []);
+
+  const isAlreadyAvailable = (loc: LocationItem) => { // NEW
+    if (loc.isActive === false) return false;
+    const endTs = loc.endDate ? new Date(loc.endDate).getTime() : NaN;
+    const isExpired = Number.isFinite(endTs) && endTs < Date.now();
+    if (isExpired) return false; // expired means already end of the ads period, so another person can use it
+    return true;
+  };
+
+  const iconFor = (loc: LocationItem) => { // NEW
+    // Priority: disabled (yellow) > expired (red) > valid (green)
+    if (loc.isActive === false) return markerIcons.yellow;
+    if (isAlreadyAvailable(loc)) return markerIcons.green; // expired means already end of the ads period, so another person can use it
+    return markerIcons.red;
+  };
+
+  const showStatusAvailiability = (loc: LocationItem) => { // NEW
+    if (loc.isActive === false) return (
+      <>
+      <span className="poi-icon" aria-hidden><RiSignalWifiOffLine /></span>
+        Not active now, please check back later on
+      </>
+    );
+    if (isAlreadyAvailable(loc)) return (
+      <>
+      <span className="poi-icon" aria-hidden><FaCheckCircle color="green"/></span>
+        Available, please grab it now!
+      </>
+    );
+
+    return (
+      <>
+      <span className="poi-icon" aria-hidden><CgUnavailable /></span>
+        Not available right now, please check back later on
+      </>
+    );
+  };
+
   return (
     <>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12} onClick={handleMapClick}>
         {locations?.map((loc) => (
           <Marker key={loc.id} position={{ lat: loc?.lat, lng: loc?.lng }} onClick={() => setSelected(loc)} 
-           icon={greenDot}
+           icon={iconFor(loc)}
           />
         ))}
 
@@ -110,6 +169,9 @@ export default function MapView(): JSX.Element {
                   {selected.screenWidth && selected.screenHeight
                     ? `${selected.screenWidth} × ${selected.screenHeight}px`
                     : "Size N/A"}
+                </div>
+                <div className="poi-line">
+                  {showStatusAvailiability(selected)}
                 </div>
               </div>
             </div>
