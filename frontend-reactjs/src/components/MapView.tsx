@@ -4,6 +4,7 @@ import { getListLocationsApi } from "../api/http";
 import { createLocationApi } from "../api/http";
 import AddLocationModal from "../components/AddLocationModal";
 import { DEFAULT_NO_IMAGE } from "../constants/ImgConst";
+import { SlScreenTablet } from "react-icons/sl";
 
 type LocationItem = {
   id: number; 
@@ -105,7 +106,7 @@ export default function MapView(): JSX.Element {
                   </div>
                 )}
                 <div className="poi-line">
-                  <span className="poi-icon" aria-hidden>💻</span>
+                  <span className="poi-icon" aria-hidden><SlScreenTablet /></span>
                   {selected.screenWidth && selected.screenHeight
                     ? `${selected.screenWidth} × ${selected.screenHeight}px`
                     : "Size N/A"}
