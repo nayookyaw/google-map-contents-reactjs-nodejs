@@ -18,6 +18,8 @@ model Location {
   locationName String?
   screenWidth Float?
   screenHeight Float?
+  startDate    DateTime?   // YYYY-MM-DDT00:00:00.000Z
+  endDate      DateTime?   // YYYY-MM-DDT00:00:00.000Z
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

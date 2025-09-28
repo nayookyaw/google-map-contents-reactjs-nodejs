@@ -19,6 +19,24 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
   const [screenWidth, setScreenWidth] = React.useState<number | ''>(initial.screenWidth ?? '');
   const [screenHeight, setScreenHeight] = React.useState<number | ''>(initial.screenHeight ?? '');
 
+  // datetime helpers
+  const isoToLocalInput = (iso?: string | null) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    // to "YYYY-MM-DDTHH:MM"
+    const pad = (n: number) => String(n).padStart(2,'0');
+    const yyyy = d.getFullYear();
+    const mm = pad(d.getMonth()+1);
+    const dd = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mi = pad(d.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+  };
+  const localInputToISO = (local?: string) => (local ? new Date(local).toISOString() : undefined);
+
+  const [startDT, setStartDT] = React.useState<string>(isoToLocalInput(initial.startDate || undefined));
+  const [endDT, setEndDT] = React.useState<string>(isoToLocalInput(initial.endDate || undefined));
+
   // Image handling
   const currentImgSrc = React.useMemo(() => {
     return initial.imageBase64 && initial.imageMime
@@ -43,6 +61,8 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
     setNewImageBase64(undefined);
     setNewImageMime(undefined);
     setImageError(null);
+    setStartDT(isoToLocalInput(initial.startDate || undefined));
+    setEndDT(isoToLocalInput(initial.endDate || undefined));
   }, [initial, currentImgSrc]);
 
   const onPickFile = async (file: File) => {
@@ -58,14 +78,12 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
     }
     const arrBuf = await file.arrayBuffer();
     const uint8 = new Uint8Array(arrBuf);
-    // Convert to Base64 (without data: prefix)
     let binary = '';
     for (let i = 0; i < uint8.length; i++) binary += String.fromCharCode(uint8[i]);
     const b64 = btoa(binary);
-
     setNewImageBase64(b64);
     setNewImageMime(file.type);
-    setPreviewSrc(URL.createObjectURL(file)); // fast preview
+    setPreviewSrc(URL.createObjectURL(file));
   };
 
   if (!open) return null;
@@ -84,6 +102,10 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
               <label>Longitude<input type="number" step="0.000001" value={lng} onChange={e => setLng(parseFloat(e.target.value))} /></label>
               <label>Screen Width<input type="number" value={screenWidth} onChange={e => setScreenWidth(e.target.value === '' ? '' : parseFloat(e.target.value))} /></label>
               <label>Screen Height<input type="number" value={screenHeight} onChange={e => setScreenHeight(e.target.value === '' ? '' : parseFloat(e.target.value))} /></label>
+
+              {/* NEW: datetime-local fields */}
+              <label>Start Datetime<input className="" type="datetime-local" value={startDT} onChange={e=>setStartDT(e.target.value)} /></label>
+              <label>End Datetime<input className="" type="datetime-local" value={endDT} onChange={e=>setEndDT(e.target.value)} /></label>
             </div>
           </div>
 
@@ -114,10 +136,7 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
                 />
               </label>
               {imageError && <div className="error mt8">{imageError}</div>}
-
-              {newImageBase64 && (
-                <div className="muted mt8">New image selected. It will replace the old image on Save.</div>
-              )}
+              {newImageBase64 && <div className="muted mt8">New image selected. It will replace the old image on Save.</div>}
             </div>
           </div>
         </div>
@@ -133,9 +152,10 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
               lat, lng,
               screenWidth: typeof screenWidth === 'number' ? screenWidth : undefined,
               screenHeight: typeof screenHeight === 'number' ? screenHeight : undefined,
-              // Only send image fields if user picked a new image
               imageBase64: newImageBase64,
-              imageMime: newImageMime as any
+              imageMime: newImageMime as any,
+              startDate: localInputToISO(startDT),
+              endDate: localInputToISO(endDT),
             })}
           >
             Save

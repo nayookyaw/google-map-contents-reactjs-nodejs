@@ -12,6 +12,9 @@ export const CreateLocationDto = z.object({
   screenHeight : z.number().optional(),
   description: z.string().optional(),
 
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+
   // image as Base64 (stored in DB)
   imageBase64: z
     .string()

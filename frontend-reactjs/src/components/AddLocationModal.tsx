@@ -16,6 +16,8 @@ type Props = {
     lng: number;
     imageBase64?: string;
     imageMime?: string;
+    startDate?: string; // ISO UTC
+    endDate?: string;   // ISO UTC
   }) => Promise<void> | void;
 };
 
@@ -25,8 +27,13 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
   const [locationName, setLocationName] = React.useState("");
   const [screenWidth, setScreenWidth] = React.useState<number | "">("");
   const [screenHeight, setScreenHeight] = React.useState<number | "">("");
+
+  // datetime-local strings like "2025-09-28T14:30"
+  const [startDT, setStartDT] = React.useState<string>("");
+  const [endDT, setEndDT] = React.useState<string>("");
+
   const [imageFile, setImageFile] = React.useState<File | null>(null);
-  const [imagePreview, setImagePreview] = React.useState<string | null>(null); // data: url for preview
+  const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const [errors, setErrors] = React.useState<string[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
 
@@ -35,6 +42,7 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
       setName(""); setDescription(""); setLocationName("");
       setScreenWidth(""); setScreenHeight("");
       setImageFile(null); setImagePreview(null);
+      setStartDT(""); setEndDT("");
       setErrors([]); setSubmitting(false);
     }
   }, [open]);
@@ -49,9 +57,15 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
     reader.readAsDataURL(f);
   };
 
+  // Helpers: convert between datetime-local and ISO (UTC)
+  const localInputToISO = (local?: string) => (local ? new Date(local).toISOString() : undefined);
+
   const validate = () => {
     const e: string[] = [];
     if (!name.trim()) e.push("Name is required");
+    if (startDT && endDT && new Date(startDT) > new Date(endDT)) {
+      e.push("Start datetime cannot be after End datetime");
+    }
     setErrors(e);
     return e.length === 0;
   };
@@ -71,22 +85,16 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
         imageMime = mime;
       }
 
-      // if (imageFile) {
-      //   const inputImg = await imageFileToBase64Compressed(imageFile, { maxW: 1024, maxH: 1024, quality: 0.8 });
-      //   imageBase64 = inputImg.base64;
-      //   imageMime = inputImg.mime;
-      // }
-
       await onSubmit({
         name: name.trim(),
         description: description.trim() || undefined,
         locationName: locationName.trim() || undefined,
         screenWidth: screenWidth === "" ? undefined : Number(screenWidth),
         screenHeight: screenHeight === "" ? undefined : Number(screenHeight),
-        lat,
-        lng,
-        imageBase64,
-        imageMime,
+        lat, lng,
+        imageBase64, imageMime,
+        startDate: localInputToISO(startDT),
+        endDate: localInputToISO(endDT),
       });
 
       onClose();
@@ -109,44 +117,6 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
     });
   }
 
-  // async function imageFileToBase64Compressed(
-  //   file: File,
-  //   opts: { maxW?: number; maxH?: number; quality?: number } = {}
-  // ): Promise<{ base64: string; mime: string }> {
-  //   const maxW = opts.maxW ?? 1024;
-  //   const maxH = opts.maxH ?? 1024;
-  //   const quality = opts.quality ?? 0.8; // 0..1 (JPEG/WebP)
-
-  //   const img = document.createElement("img");
-  //   const url = URL.createObjectURL(file);
-  //   await new Promise<void>((res, rej) => {
-  //     img.onload = () => res();
-  //     img.onerror = (e) => rej(e);
-  //     img.src = url;
-  //   });
-
-  //   const { width, height } = img;
-  //   let w = width, h = height;
-  //   const ratio = Math.min(maxW / width, maxH / height, 1);
-  //   w = Math.round(width * ratio);
-  //   h = Math.round(height * ratio);
-
-  //   const canvas = document.createElement("canvas");
-  //   canvas.width = w;
-  //   canvas.height = h;
-  //   const ctx = canvas.getContext("2d")!;
-  //   ctx.drawImage(img, 0, 0, w, h);
-
-  //   // Prefer JPEG/WebP for compression
-  //   const mime = file.type.includes("png") ? "image/jpeg" : (file.type || "image/jpeg");
-  //   const dataUrl = canvas.toDataURL(mime, quality); // compress here
-  //   URL.revokeObjectURL(url);
-
-  //   const [prefix, b64] = dataUrl.split(",", 2);
-  //   const outMime = prefix.match(/data:(.*);base64/)?.[1] ?? "image/jpeg";
-  //   return { base64: b64, mime: outMime };
-  // }
-
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true">
       <div className="modal">
@@ -167,13 +137,32 @@ export default function AddLocationModal({ open, onClose, lat, lng, onSubmit }: 
           <label className="label">Location Name</label>
           <input className="input" value={locationName} onChange={e=>setLocationName(e.target.value)} placeholder="Brandor Lane" />
 
-          <label className="label">Screen Width (px)</label>
-          <input className="input" type="number" min={0} value={screenWidth} onChange={e=>setScreenWidth(e.target.value===""?"":Number(e.target.value))} placeholder="704" />
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12}}>
+            <div>
+              <label className="label">Screen Width (px)</label>
+              <input className="input" type="number" min={0} value={screenWidth}
+                onChange={e=>setScreenWidth(e.target.value===""?"":Number(e.target.value))} placeholder="704" />
+            </div>
+            <div>
+              <label className="label">Screen Height (px)</label>
+              <input className="input" type="number" min={0} value={screenHeight}
+                onChange={e=>setScreenHeight(e.target.value===""?"":Number(e.target.value))} placeholder="1408" />
+            </div>
+          </div>
 
-          <label className="label">Screen Height (px)</label>
-          <input className="input" type="number" min={0} value={screenHeight} onChange={e=>setScreenHeight(e.target.value===""?"":Number(e.target.value))} placeholder="1408" />
+          {/* NEW: start/end datetime */}
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginTop:12}}>
+            <div>
+              <label className="label">Start Datetime</label>
+              <input className="input" type="datetime-local" value={startDT} onChange={e=>setStartDT(e.target.value)} />
+            </div>
+            <div>
+              <label className="label">End Datetime</label>
+              <input className="input" type="datetime-local" value={endDT} onChange={e=>setEndDT(e.target.value)} />
+            </div>
+          </div>
 
-          <label className="label">Image</label>
+          <label className="label" style={{marginTop:12}}>Image</label>
           <input className="input" type="file" accept="image/*" onChange={e=>onFileChange(e.target.files?.[0] ?? null)} />
           {imagePreview && <img src={imagePreview} alt="preview" style={{ marginTop: 8, width: "100%", borderRadius: 8 }} />}
 

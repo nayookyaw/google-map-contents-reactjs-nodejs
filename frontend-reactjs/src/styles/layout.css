@@ -97,7 +97,6 @@ button.danger { background: #e53935; color: white; }
 .p16 { padding: 16px; }
 
 /* Buttons & inputs */
-.input { padding: 8px 12px; border: 1px solid #d0d5dd; border-radius: 10px; outline: none; }
 .input:focus { border-color: #7f56d9; box-shadow: 0 0 0 3px rgba(127,86,217,0.15); }
 .btn { padding: 8px 12px; border-radius: 10px; border: 1px solid #d0d5dd; background: #fff; cursor: pointer; }
 .btn:hover { background: #f9fafb; }

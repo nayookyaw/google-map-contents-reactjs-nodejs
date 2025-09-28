@@ -25,6 +25,8 @@ export type LocationItem = {
   locationName?: string | null;
   screenWidth?: number | null;
   screenHeight?: number | null;
+  startDate?: string | null; // ISO
+  endDate?: string | null;   // ISO
   createdAt?: string;
   updatedAt?: string;
 };
