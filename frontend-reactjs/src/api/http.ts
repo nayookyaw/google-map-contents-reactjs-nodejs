@@ -29,6 +29,7 @@ export type LocationItem = {
   endDate?: string | null;   // ISO
   createdAt?: string;
   updatedAt?: string;
+  isActive?: boolean;
 };
 
 export type CreateLocationPayload = Omit<LocationItem, 'id' | 'createdAt' | 'updatedAt'>;

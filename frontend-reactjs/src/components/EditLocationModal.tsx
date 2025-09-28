@@ -18,6 +18,7 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
   const [lng, setLng] = React.useState<number>(initial.lng);
   const [screenWidth, setScreenWidth] = React.useState<number | ''>(initial.screenWidth ?? '');
   const [screenHeight, setScreenHeight] = React.useState<number | ''>(initial.screenHeight ?? '');
+  const [isActive, setIsActive] = React.useState<boolean>((initial as any).isActive ?? false);
 
   // datetime helpers
   const isoToLocalInput = (iso?: string | null) => {
@@ -63,6 +64,7 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
     setImageError(null);
     setStartDT(isoToLocalInput(initial.startDate || undefined));
     setEndDT(isoToLocalInput(initial.endDate || undefined));
+    setIsActive((initial as any).isActive ?? false);
   }, [initial, currentImgSrc]);
 
   const onPickFile = async (file: File) => {
@@ -106,6 +108,15 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
               {/* NEW: datetime-local fields */}
               <label>Start Datetime<input className="" type="datetime-local" value={startDT} onChange={e=>setStartDT(e.target.value)} /></label>
               <label>End Datetime<input className="" type="datetime-local" value={endDT} onChange={e=>setEndDT(e.target.value)} /></label>
+
+              <label className="label" style={{display:'flex', alignItems:'center', gap:8}}>
+                Make it Active
+                <input
+                  type="checkbox"
+                  checked={isActive}
+                  onChange={e => setIsActive(e.target.checked)}
+                />
+              </label>
             </div>
           </div>
 
@@ -156,6 +167,7 @@ export default function EditLocationModal({ open, onClose, initial, onSubmit }: 
               imageMime: newImageMime as any,
               startDate: localInputToISO(startDT),
               endDate: localInputToISO(endDT),
+              isActive,
             })}
           >
             Save

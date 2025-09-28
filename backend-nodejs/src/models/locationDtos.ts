@@ -15,6 +15,8 @@ export const CreateLocationDto = z.object({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
 
+  isActive: z.boolean().optional(),
+
   // image as Base64 (stored in DB)
   imageBase64: z
     .string()
