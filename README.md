@@ -3,10 +3,10 @@
 
 # Google Map with Contents Reactjs and NodeJs Typescript Jest Unit Testing
 * Project Details
-    This project is the dashboard that end-user is able to manage the location on google map
-    Able to manage (add/edit/delete) users
-    Able to add new location on the map by clicking on specific location on the map
-    Able to manage location details such as name, description, image, start/end datetime and active status
+    - This project is the dashboard that end-user is able to manage the location on google map
+    - Able to manage (add/edit/delete) users
+    - Able to add new location on the map by clicking on specific location on the map
+    - Able to manage location details such as name, description, image, start/end datetime and active status
 
 # Result Outcome Dashboard Console
 ![Screenshot](./result_img/home.png)
