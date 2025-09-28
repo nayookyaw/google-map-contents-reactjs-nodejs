@@ -9,13 +9,21 @@
     - Able to manage location details such as name, description, image, start/end datetime and active status
 
 # Result Outcome Dashboard Console
+* Home Page
 ![Screenshot](./result_img/home.png)
+* Locations
 ![Screenshot](./result_img/locations.png)
+* Location Edit
 ![Screenshot](./result_img/locationedit.png)
+* Users
 ![Screenshot](./result_img/users.png)
+* Ads UI
 ![Screenshot](./result_img/ads1.png)
+* Ads UI
 ![Screenshot](./result_img/ads2.png)
+* Ads UI
 ![Screenshot](./result_img/ads3.png)
+* Settings
 ![Screenshot](./result_img/setting.png)
 
 
