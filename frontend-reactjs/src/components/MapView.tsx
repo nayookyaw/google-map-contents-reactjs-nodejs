@@ -44,6 +44,18 @@ export default function MapView(): JSX.Element {
       .catch((err: any) => console.error("Failed to fetch locations", err));
   };
 
+  // 2) Poll every 3 seconds (and fetch immediately on mount)
+  React.useEffect(() => {
+    // only poll when the tab is visible (avoids useless background work)
+    const id = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        getLocationList();
+      }
+    }, 3000);
+
+    return () => window.clearInterval(id); // cleanup on unmount
+  }, []);
+
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (!e.latLng) return;
     setClickedLat(e.latLng.lat());
@@ -100,8 +112,8 @@ export default function MapView(): JSX.Element {
     if (loc.isActive === false) return false;
     const endTs = loc.endDate ? new Date(loc.endDate).getTime() : NaN;
     const isExpired = Number.isFinite(endTs) && endTs < Date.now();
-    if (isExpired) return false; // expired means already end of the ads period, so another person can use it
-    return true;
+    if (isExpired) return true; // expired means already end of the ads period, so another person can use it
+    return false;
   };
 
   const iconFor = (loc: LocationItem) => { // NEW
