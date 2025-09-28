@@ -8,6 +8,7 @@ import { SlScreenTablet } from "react-icons/sl";
 import { CgUnavailable } from "react-icons/cg";
 import { FaCheckCircle } from "react-icons/fa";
 import { RiSignalWifiOffLine } from "react-icons/ri";
+import { FaBullhorn } from "react-icons/fa";
 
 type LocationItem = {
   id: number; 
@@ -140,6 +141,13 @@ export default function MapView(): JSX.Element {
       <>
       <span className="poi-icon" aria-hidden><FaCheckCircle color="green"/></span>
         Available, please grab it now!
+        <button className="flex items-center gap-2 px-5 py-2.5 
+          bg-gradient-to-r from-blue-500 to-indigo-600 
+          hover:from-blue-600 hover:to-indigo-700
+          text-white font-medium text-sm rounded-xl 
+          shadow-md hover:shadow-lg transition-all duration-300">
+          Advertise Now <FaBullhorn />
+        </button>
       </>
     );
 
