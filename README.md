@@ -26,6 +26,8 @@
 * Settings
 ![Screenshot](./result_img/setting.png)
 
+# Video Demo
+[![Watch the video](./result_img/home.png)](https://www.youtube.com/watch?v=-noOvzstzB0)
 
 # 1) Start MySQL
 docker compose up -d
