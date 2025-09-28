@@ -26,6 +26,9 @@
 * Settings
 ![Screenshot](./result_img/setting.png)
 
+# Dashboard Demo GIF
+![Screenshot](./result_img/dashboard-demo.gif)
+
 # Video Demo
 [![Watch the video](./result_img/home.png)](https://www.youtube.com/watch?v=-noOvzstzB0)
 
